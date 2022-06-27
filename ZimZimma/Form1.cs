@@ -14,8 +14,24 @@ namespace ZimZimma
     {
         public Form1()
         {
+            this.WindowState = FormWindowState.Maximized;
+            this.Load += Form1_Load;
             InitializeComponent();
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show($"{ClientSize.Width}");
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show($"{ClientSize.Height}");
+
+        }
     }
 }
