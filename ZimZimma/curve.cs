@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
+using System.IO;
 
 namespace ZimZimma
 {
-    class curve
+    public class curve
     {
 		public List<Point> ControlPoints;
 		public List<PointF> secCurvepoints;
+		public Point pnn;
 
-		public float t_inc = 0.001f;
+		public float t_inc = 0.0001f;
 
 		public Color cl = Color.Red;
 		public Color clr1 = Color.Black;
@@ -85,6 +87,17 @@ namespace ZimZimma
 			}
 		}
 
+		public void setffile()
+        {
+			StreamReader sr = new StreamReader(@"C:\Users\Omar\source\repos\ZimZimma\ZimZimma\bin\bitmapimgs\lcp.txt", true);
+            while (!sr.EndOfStream)
+            {
+				string[] a = sr.ReadLine().Split(',');
+				pnn = new Point(Int32.Parse(a[0]), Int32.Parse(a[1]));
+				ControlPoints.Add(pnn);
+            }
+        }
+
 		public int isCtrlPoint(int XMouse, int YMouse)
 		{
 			Rectangle rc;
@@ -124,7 +137,7 @@ namespace ZimZimma
 			for (float t = 0.0f; t <= 1.0; t += t_inc)
 			{
 				curvePoint = CalcCurvePointAtTime(t);
-				secCurvepoints.Add(curvePoint);
+				//secCurvepoints.Add(curvePoint);
 				g.FillEllipse(new SolidBrush(cl),
 										curvePoint.X - 4, curvePoint.Y - 4,
 										8, 8);
@@ -160,11 +173,21 @@ namespace ZimZimma
 			return false;
 		}
 
+		public void wonfile()
+        {
+			StreamWriter sw = new StreamWriter(@"C:\Users\Omar\source\repos\ZimZimma\ZimZimma\bin\bitmapimgs\lcp.txt", true);
+            for (int i = 0; i < ControlPoints.Count; i++)
+            {
+				sw.WriteLine($"{ControlPoints[i].X},{ControlPoints[i].Y}");
+            }
+			sw.Close();
+        }
+
 		public void DrawCurve(Graphics g)
 		{
 			DrawControlPoints(g);
 			DrawCurvePoints(g);
-			drawseccurve(g);
+			//drawseccurve(g);
 		}
 
 
