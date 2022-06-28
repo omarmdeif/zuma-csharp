@@ -107,6 +107,30 @@ namespace ZimZimma
                 ff.movemyb(balls);
             }
             drawd(CreateGraphics());
+            int rma = 999;
+            for (int i = 0; i < balls.Count; i++)
+            {
+                if(balls[i].exp == 1)
+                {
+                    rma = i;
+                }
+            }
+            if(rma != 999)
+            {
+                balls.RemoveAt(rma);
+            }
+            rma = 999;
+            for (int i = 0; i < ff.myb.Count; i++)
+            {
+                if (ff.myb[i].exp == 1)
+                {
+                    rma = i;
+                }
+            }
+            if (rma != 999)
+            {
+                ff.myb.RemoveAt(rma);
+            }
 
         }
 

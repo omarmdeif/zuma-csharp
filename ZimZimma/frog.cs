@@ -23,7 +23,7 @@ namespace ZimZimma
         {
             img = new Bitmap("assets\\nfrog.bmp");
             img.MakeTransparent(img.GetPixel(53, 28));
-            nextbi = 1;
+            nextbi = rr.Next(1, 6);
             Bitmap bimg = new Bitmap($"assets\\b{nextbi}.bmp");
             nextb = new Bitmap(bimg, 14, 12);
             x = (f.Width / 2) - (img.Width / 2);
@@ -117,7 +117,7 @@ namespace ZimZimma
             myb.Add(pnn);
             myb[myb.Count - 1].SetVals(myb[myb.Count - 1].x, myb[myb.Count - 1].y, mx, my);
 
-            nextbi = 1;
+            nextbi = rr.Next(1, 6);
             Bitmap bimg = new Bitmap($"assets\\b{nextbi}.bmp");
             nextb = new Bitmap(bimg, 14, 12);
             nextbx = x + 53 - (nextb.Width / 2);
@@ -127,7 +127,6 @@ namespace ZimZimma
         public void movemyb(List<target> balls)
         {
             int rm = 999;
-            int rmb = 999;
             for (int i = 0; i < myb.Count; i++)
             {
                 myb[i].MoveStep();
@@ -142,13 +141,69 @@ namespace ZimZimma
                     rm = i;
                 }
                 for (int j = 0; j < balls.Count; j++)
-                {
-                    if (myb[i].x >= balls[j].x && myb[i].x <= balls[i + 1].x
-                      && myb[i].y >= balls[i].y && myb[i].y <= balls[i + 1].y)
+                {   
+                      //top
+                    if ((myb[i].x >= balls[j].x && myb[i].x <= balls[i + 1].x+ balls[i + 1].img.Width
+                      && myb[i].y <= balls[j].y  + balls[j].img.Height - 10 && myb[i].y >= balls[i + 1].y)
+                      //right
+                      || (myb[i].x + myb[i].img.Width - 10 >= balls[j].x && myb[i].x <= balls[i + 1].x + balls[i + 1].img.Width
+                      && myb[i].y <= balls[j].y + balls[j].img.Height - 10 && myb[i].y >= balls[i + 1].y)
+                      //left
+                      || (myb[i].x >= balls[j].x + balls[i + 1].img.Width - 10 && myb[i].x <= balls[i + 1].x
+                      && myb[i].y <= balls[j].y + balls[j].img.Height - 10 && myb[i].y >= balls[i + 1].y)
+                      //bot
+                      || (myb[i].x >= balls[j].x && myb[i].x <= balls[i + 1].x + balls[i + 1].img.Width - 32
+                      && myb[i].y <= balls[j].y + balls[j].img.Height - 10 && myb[i].y >= balls[i + 1].y)
+
+                      )
                     {
-                        if(myb[i].w == balls[j].w)
+                        int fct = 0, bct = 0;
+                        for (int tf = j + 1; tf < balls.Count; tf++)
                         {
-                            rmb = j;
+                            if(balls[tf].w == balls[j].w)
+                            {
+                                fct++;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        for (int tb = j - 1; tb >= 0; tb--)
+                        {
+                            if (balls[tb].w == balls[j].w)
+                            {
+                                bct++;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        if(fct > 0)
+                        {
+                            for (int tf = j; tf < balls.Count; tf++)
+                            {
+                                balls[tf].exp = 1;
+                            }
+                            myb[i].exp = 1;
+                        }
+                        if(bct > 0){
+                            for (int tb = j; tb >= 0; tb--)
+                            {
+                                balls[tb].exp = 1;
+                            }
+                            myb[i].exp = 1;
+                        }
+                        if(fct == 0 && bct == 0)
+                        {
+                            balls.Add(balls[balls.Count - 1]);
+                            for (int m = j; m < balls.Count - 1; m++)
+                            {
+                                balls[m + 1] = balls[m];
+                            }
+                            balls[j] = myb[i];
+                            rm = i;
                         }
                     }
                 }
@@ -156,10 +211,6 @@ namespace ZimZimma
             if (rm != 999)
             {
                 myb.RemoveAt(rm);
-            }
-            if (rmb != 999)
-            {
-                balls.RemoveAt(rmb);
             }
         }
 

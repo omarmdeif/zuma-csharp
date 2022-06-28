@@ -17,9 +17,10 @@ namespace ZimZimma
         public int w;
         public PointF initpos;
         public bool cb = false;
+        public int exp = 0;
         public target(curve c)
         {
-            w = 1;
+            w = rr.Next(1, 6);
             img = new Bitmap($"assets\\{w}.bmp");
             //pnn = new PointF();
             img.MakeTransparent(img.GetPixel(0, 0));
@@ -71,11 +72,19 @@ namespace ZimZimma
 
         public void draw(Graphics g)
         {
-            g.DrawImage(img, x, y);
+            if(exp > 0)
+            {
+                g.DrawImage(eimg, x, y);
+            }
+            else if(exp == 0)
+            {
+                g.DrawImage(img, x, y);
+            }
+            
         }
 
         public float xs, ys, xe, ye, tempx, tempy, dx, dy, m, invM, currX, currY;
-        int Speed = 10;
+        int Speed = 20;
         public void SetVals(float a, float b, float c, float d)
         {
             xs = a;
