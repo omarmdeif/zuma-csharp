@@ -64,27 +64,27 @@ namespace ZimZimma
                 ff.swivel(currx, curry, prevx, prevy);
 
             }
-            prevx = e.X; prevy = e.Y;
             whichstate++;
         }
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
 
-            switch (CurrentMouseMode)
-            {
-                case Modes.CTRL_POINTS:
+            //switch (CurrentMouseMode)
+            //{
+            //    case Modes.CTRL_POINTS:
 
-                    obj.SetControlPoint(new Point(e.X, e.Y));
-                    numOfCtrlPoints++;
+            //        obj.SetControlPoint(new Point(e.X, e.Y));
+            //        numOfCtrlPoints++;
 
-                    break;
+            //        break;
 
-                case Modes.DRAG:
-                    indexCurrDragNode = obj.isCtrlPoint(e.X, e.Y);
-                    break;
-            }
-
+            //    case Modes.DRAG:
+            //        indexCurrDragNode = obj.isCtrlPoint(e.X, e.Y);
+            //        break;
+            //}
+            prevx = e.X; prevy = e.Y;
+            ff.shoot(prevx, prevy);
             drawd(CreateGraphics());
         }
 
@@ -94,13 +94,17 @@ namespace ZimZimma
             {
                 fs[i] += 0.001f;
                 balls[i].move(obj, fs[i]);
-                if (balls[i].newball() && balls.Count <= 50)
+                if (balls[i].newball() && balls.Count <= 25)
                 {
                     pnnt = new target(obj);
                     pnnf = 0.0f;
                     fs.Add(pnnf);
                     balls.Add(pnnt);
                 }
+            }
+            if(ff.myb != null)
+            {
+                ff.movemyb(balls);
             }
             drawd(CreateGraphics());
 
@@ -120,6 +124,9 @@ namespace ZimZimma
                 case Keys.A:
                     obj.wonfile();
                     break;
+                case Keys.X:
+                    
+                    break;
                 default:
                     break;
             }
@@ -137,7 +144,7 @@ namespace ZimZimma
         {
 
             off = new Bitmap(ClientSize.Width, ClientSize.Height);
-            map = new Bitmap("C:\\Users\\Omar\\source\\repos\\ZimZimma\\ZimZimma\\bin\\bitmapimgs\\Riverbed.bmp");
+            //map = new Bitmap("assets\\Riverbed.bmp");
             obj.setffile();
             pnnt = new target(obj);
             balls.Add(pnnt);

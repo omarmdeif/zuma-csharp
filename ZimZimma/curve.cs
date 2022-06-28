@@ -89,7 +89,7 @@ namespace ZimZimma
 
 		public void setffile()
         {
-			StreamReader sr = new StreamReader(@"C:\Users\Omar\source\repos\ZimZimma\ZimZimma\bin\bitmapimgs\lcp.txt", true);
+			StreamReader sr = new StreamReader("assets\\lcp.txt", true);
             while (!sr.EndOfStream)
             {
 				string[] a = sr.ReadLine().Split(',');
@@ -175,7 +175,7 @@ namespace ZimZimma
 
 		public void wonfile()
         {
-			StreamWriter sw = new StreamWriter(@"C:\Users\Omar\source\repos\ZimZimma\ZimZimma\bin\bitmapimgs\lcp.txt", true);
+			StreamWriter sw = new StreamWriter("assets\\lcp.txt", true);
             for (int i = 0; i < ControlPoints.Count; i++)
             {
 				sw.WriteLine($"{ControlPoints[i].X},{ControlPoints[i].Y}");
