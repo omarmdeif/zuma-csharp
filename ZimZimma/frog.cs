@@ -63,7 +63,7 @@ namespace ZimZimma
             xdiff = currx - prevx;
             ydiff = curry - prevy;
 
-            angle = (float)(Math.Atan2(ydiff, xdiff) * 180.0f / Math.PI);
+            angle = (float)((Math.Atan2(ydiff, xdiff) * 180) / Math.PI);
             //Bitmap rotatede = new Bitmap(img, img.Width, img.Height);
             ////g = Graphics.FromImage(img);
             ////g.TranslateTransform(img.Width / 2, img.Height / 2);
@@ -78,7 +78,34 @@ namespace ZimZimma
             //    g.TranslateTransform(- img.Width / 2, -img.Height / 2);
             //    g.DrawImage(img, new Point(0, 0));
             //}
+            PointF newp = new PointF(img.Width, img.Height);
             // img = RotateImage(img, angle);
+        }
+        public static Bitmap RotateImage2(Bitmap image, PointF offset, float angle)
+        {
+            if (image == null)
+                throw new ArgumentNullException("image");
+
+            //create a new empty bitmap to hold rotated image
+            Bitmap rotatedBmp = new Bitmap(image.Width, image.Height);
+            rotatedBmp.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            //make a graphics object from the empty bitmap
+            Graphics g = Graphics.FromImage(rotatedBmp);
+
+            //Put the rotation point in the center of the image
+            g.TranslateTransform(offset.X, offset.Y);
+
+            //rotate the image
+            g.RotateTransform(angle);
+
+            //move the image back
+            g.TranslateTransform(-offset.X, -offset.Y);
+
+            //draw passed in image onto graphics object
+            g.DrawImage(image, new PointF(0, 0));
+
+            return rotatedBmp;
         }
 
         public Bitmap RotateImage(Bitmap img, float rotationAngle)
@@ -111,12 +138,13 @@ namespace ZimZimma
             return bmp;
         }
 
-        public void shoot(float mx, float my)
+        public void shoot(float mx, float my, List<float> fs)
         {
+            float gg= 0.0f;
+            fs.Add(gg);
             pnn = new target(x + img.Width, y + img.Height, nextbi);
             myb.Add(pnn);
             myb[myb.Count - 1].SetVals(myb[myb.Count - 1].x, myb[myb.Count - 1].y, mx, my);
-
             nextbi = rr.Next(1, 6);
             Bitmap bimg = new Bitmap($"assets\\b{nextbi}.bmp");
             nextb = new Bitmap(bimg, 14, 12);
@@ -124,86 +152,103 @@ namespace ZimZimma
             nextby = y + 28 - (nextb.Height / 2);
         }
 
-        public void movemyb(List<target> balls)
+        public void movemyb(List<target> balls, curve c)
         {
             int rm = 999;
             for (int i = 0; i < myb.Count; i++)
             {
                 myb[i].MoveStep();
-                if (myb[i].x > 1920 || myb[i].x < 0 || myb[i].y > 1057 || myb[i].y < 0)
-                {
-                    rm = i;
-                }
-
-                if (myb[i].x > ((balls[balls.Count - 1].x + balls[balls.Count - 1].img.Width) + 50)
-                    || myb[i].x < 150 || myb[i].y > (1050 - myb[i].img.Height) || myb[i].y < 150)
+                if (myb[i].x + myb[i].img.Width > 1712 || myb[i].x < 150 || myb[i].y + myb[i].img.Height > 951 || myb[i].y < 150)
                 {
                     rm = i;
                 }
                 for (int j = 0; j < balls.Count; j++)
-                {   
-                      //top
-                    if ((myb[i].x >= balls[j].x && myb[i].x <= balls[i + 1].x+ balls[i + 1].img.Width
-                      && myb[i].y <= balls[j].y  + balls[j].img.Height - 10 && myb[i].y >= balls[i + 1].y)
-                      //right
-                      || (myb[i].x + myb[i].img.Width - 10 >= balls[j].x && myb[i].x <= balls[i + 1].x + balls[i + 1].img.Width
-                      && myb[i].y <= balls[j].y + balls[j].img.Height - 10 && myb[i].y >= balls[i + 1].y)
-                      //left
-                      || (myb[i].x >= balls[j].x + balls[i + 1].img.Width - 10 && myb[i].x <= balls[i + 1].x
-                      && myb[i].y <= balls[j].y + balls[j].img.Height - 10 && myb[i].y >= balls[i + 1].y)
-                      //bot
-                      || (myb[i].x >= balls[j].x && myb[i].x <= balls[i + 1].x + balls[i + 1].img.Width - 32
-                      && myb[i].y <= balls[j].y + balls[j].img.Height - 10 && myb[i].y >= balls[i + 1].y)
+                {
 
-                      )
+                    if (j < balls.Count - 1)
                     {
-                        int fct = 0, bct = 0;
-                        for (int tf = j + 1; tf < balls.Count; tf++)
+                        //top
+                        if (((myb[i].x >= balls[j].x && myb[i].x <= balls[j].x + balls[j].img.Width
+                          && myb[i].y <= balls[j].y + balls[j].img.Height - 10 && myb[i].y >= balls[j].y)
+                          //right
+                          || (myb[i].x + myb[i].img.Width - 10 >= balls[j].x && myb[i].x <= balls[j].x
+                          && myb[i].y <= balls[j].y + balls[j].img.Height - 10 && myb[i].y >= balls[j].y)
+                          //left
+                          || (myb[i].x <= balls[j].x + balls[j].img.Width - 10 && myb[i].x >= balls[j].x
+                          && myb[i].y <= balls[j].y + balls[j].img.Height - 10 && myb[i].y >= balls[j].y)
+                          //bot
+                          || (myb[i].x >= balls[j].x && myb[i].x <= balls[j].x + balls[j].img.Width - 10
+                          && myb[i].y + myb[i].img.Height >= balls[j].y && myb[i].y <= balls[j].y))
+                          && myb[i].w == balls[j].w
+
+                          )
                         {
-                            if(balls[tf].w == balls[j].w)
+                            int fct = 0, bct = 0, lf = 0, lb = 0;
+                            for (int tf = j + 1; tf < balls.Count; tf++)
                             {
-                                fct++;
+                                if (balls[tf].w == balls[j].w)
+                                {
+                                    fct++;
+                                }
+                                else
+                                {
+                                    lf = tf;
+                                    break;
+                                }
                             }
-                            else
+                            for (int tb = j - 1; tb >= 0; tb--)
                             {
-                                break;
+                                if (balls[tb].w == balls[j].w)
+                                {
+                                    bct++;
+                                }
+                                else
+                                {
+                                    lb = tb;
+                                    break;
+                                }
+                            }
+                            if (fct > 0)
+                            {
+                                for (int tf = j; tf < lf; tf++)
+                                {
+                                    balls[tf].exp = 1;
+                                }
+                                myb[i].exp = 1;
+                            }
+                            if (bct > 0)
+                            {
+                                for (int tb = j; tb > lb; tb--)
+                                {
+                                    balls[tb].exp = 1;
+                                }
+                                myb[i].exp = 1;
+                            }
+                            if (fct == 0 && bct == 0)
+                            {
+                                myb[i].x = c.CalcCurvePointAtTime(0.0f).X;
+                                myb[i].y = c.CalcCurvePointAtTime(0.0f).Y;
+                                balls.Add(myb[i]);
+                                rm = i;
                             }
                         }
-                        for (int tb = j - 1; tb >= 0; tb--)
+                        else if (((myb[i].x >= balls[j].x && myb[i].x <= balls[j].x + balls[j].img.Width
+                        && myb[i].y <= balls[j].y + balls[j].img.Height - 10 && myb[i].y >= balls[j].y)
+                        //right
+                        || (myb[i].x + myb[i].img.Width - 10 >= balls[j].x && myb[i].x <= balls[j].x
+                        && myb[i].y <= balls[j].y + balls[j].img.Height - 10 && myb[i].y >= balls[j].y)
+                        //left
+                        || (myb[i].x <= balls[j].x + balls[j].img.Width - 10 && myb[i].x >= balls[j].x
+                        && myb[i].y <= balls[j].y + balls[j].img.Height - 10 && myb[i].y >= balls[j].y)
+                        //bot
+                        || (myb[i].x >= balls[j].x && myb[i].x <= balls[j].x + balls[j].img.Width - 10
+                        && myb[i].y + myb[i].img.Height >= balls[j].y && myb[i].y <= balls[j].y))
+                        )
                         {
-                            if (balls[tb].w == balls[j].w)
-                            {
-                                bct++;
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-                        if(fct > 0)
-                        {
-                            for (int tf = j; tf < balls.Count; tf++)
-                            {
-                                balls[tf].exp = 1;
-                            }
-                            myb[i].exp = 1;
-                        }
-                        if(bct > 0){
-                            for (int tb = j; tb >= 0; tb--)
-                            {
-                                balls[tb].exp = 1;
-                            }
-                            myb[i].exp = 1;
-                        }
-                        if(fct == 0 && bct == 0)
-                        {
-                            balls.Add(balls[balls.Count - 1]);
-                            for (int m = j; m < balls.Count - 1; m++)
-                            {
-                                balls[m + 1] = balls[m];
-                            }
-                            balls[j] = myb[i];
+                                
+                            balls.Add(myb[i]);
                             rm = i;
+
                         }
                     }
                 }

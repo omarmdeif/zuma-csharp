@@ -84,7 +84,7 @@ namespace ZimZimma
             //        break;
             //}
             prevx = e.X; prevy = e.Y;
-            ff.shoot(prevx, prevy);
+            ff.shoot(prevx, prevy, fs);
             drawd(CreateGraphics());
         }
 
@@ -92,7 +92,7 @@ namespace ZimZimma
         {
             for (int i = 0; i < balls.Count; i++)
             {
-                fs[i] += 0.001f;
+                fs[i] += 0.003f;
                 balls[i].move(obj, fs[i]);
                 if (balls[i].newball() && balls.Count <= 25)
                 {
@@ -104,7 +104,7 @@ namespace ZimZimma
             }
             if(ff.myb != null)
             {
-                ff.movemyb(balls);
+                ff.movemyb(balls, obj);
             }
             drawd(CreateGraphics());
             int rma = 999;

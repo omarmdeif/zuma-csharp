@@ -84,7 +84,7 @@ namespace ZimZimma
         }
 
         public float xs, ys, xe, ye, tempx, tempy, dx, dy, m, invM, currX, currY;
-        int Speed = 20;
+        int Speed = 30;
         public void SetVals(float a, float b, float c, float d)
         {
             xs = a;
